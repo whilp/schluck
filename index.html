@@ -1,0 +1,163 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Modern, Pythonic unit testing &mdash; Schluck v0.1dev documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Schluck v0.1dev documentation" href="#" />
+    <link rel="next" title="API Reference" href="api.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="API Reference"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">Schluck v0.1dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="modern-pythonic-unit-testing">
+<h1>Modern, Pythonic unit testing<a class="headerlink" href="#modern-pythonic-unit-testing" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-why">
+<h2>The Why<a class="headerlink" href="#the-why" title="Permalink to this headline">¶</a></h2>
+<p>I&#8217;m not satisfied with the existing testing solutions.</p>
+<ul class="simple">
+<li>The standard unittest library is overly complicated and its API
+doesn&#8217;t make sense for the problem it tries to solve. Classes are great
+for inheritance and multiple instances but tests are merely collections
+of callbacks. The use of camel case mixes badly with the code I&#8217;m testing
+which always follows <span class="target" id="index-0"></span><a class="pep reference external" href="http://www.python.org/dev/peps/pep-0008"><strong>PEP 8</strong></a>.</li>
+<li>Nose has the right idea with the <tt class="docutils literal"><span class="pre">&#64;istest</span></tt> decorator but as it&#8217;s not
+actually collecting marked tests it has to discover them all, which means
+you need a global namespace of tests if you&#8217;re going flat. Test discovery
+relies on naming conventions and doesn&#8217;t really adhere to the idiom that
+&#8220;explicit is better than implicit&#8221;. Setup and teardown of flat tests
+doesn&#8217;t ensure isolation.</li>
+<li>Admittedly I haven&#8217;t tried py.test, but when I look at it I just see a big
+mess of metaprogrammatic string-programming magic. Not my cup of tea.</li>
+</ul>
+<p>In my mind, tests are:</p>
+<ul class="simple">
+<li>Applications. I want to write my tests like I write application code.</li>
+<li>Collections of callables that fail if they raise unhandled exceptions.</li>
+</ul>
+<p><em>The Zen of Python</em> applies to testing just as well as to any other code.</p>
+</div>
+<div class="section" id="the-how">
+<h2>The How<a class="headerlink" href="#the-how" title="Permalink to this headline">¶</a></h2>
+<p>The API is inspired by that of <a class="reference external" href="http://flask.pocoo.org/">Flask</a>, not for bandwagony reasons, but
+because it&#8217;s a well-fit pattern for the problem of &#8220;collections of callables&#8221;.</p>
+<p>Assertions are done with operator overloading; while I&#8217;m not usually too fond
+of <abbr title="Domain Specific Languages">DSLs</abbr>, I also find it difficult to
+remember all the unittest assertion methods. Using the actual operators help.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">schluck</span> <span class="kn">import</span> <span class="n">Tests</span><span class="p">,</span> <span class="n">Assert</span>
+
+<span class="n">math</span> <span class="o">=</span> <span class="n">Tests</span><span class="p">()</span>
+
+<span class="nd">@math.test</span>
+<span class="k">def</span> <span class="nf">arithmetics</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Ensure that the laws of physics are in check.&quot;&quot;&quot;</span>
+    <span class="n">Assert</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+
+<span class="n">math</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/sampletests.png" src="_images/sampletests.png" />
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Modern, Pythonic unit testing</a><ul>
+<li><a class="reference internal" href="#the-why">The Why</a></li>
+<li><a class="reference internal" href="#the-how">The How</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="next chapter">API Reference</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="API Reference"
+             >next</a> |</li>
+        <li><a href="#">Schluck v0.1dev documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Dag Odenhall.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

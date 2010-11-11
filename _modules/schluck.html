@@ -1,0 +1,330 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>schluck &mdash; Schluck v0.1dev documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Schluck v0.1dev documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Schluck v0.1dev documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for schluck</h1><div class="highlight"><pre>
+<span class="c"># coding:utf-8</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">ABCMeta</span> <span class="o">=</span> <span class="nb">type</span>
+    <span class="n">abstractmethod</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+
+
+<div class="viewcode-block" id="AbstractFormatter"><a class="viewcode-back" href="../api.html#schluck.AbstractFormatter">[docs]</a><span class="k">class</span> <span class="nc">AbstractFormatter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Optional base for formatters, serves as documentation and improves</span>
+<span class="sd">    errors for incomplete formatters.</span>
+
+<span class="sd">    :param tests: The list of test functions we will be running.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="AbstractFormatter.success"><a class="viewcode-back" href="../api.html#schluck.AbstractFormatter.success">[docs]</a>    <span class="k">def</span> <span class="nf">success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;When a test succeeds, this method is called with the test</span>
+<span class="sd">        function.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</div>
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="AbstractFormatter.failure"><a class="viewcode-back" href="../api.html#schluck.AbstractFormatter.failure">[docs]</a>    <span class="k">def</span> <span class="nf">failure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;When a test fails, this method is called with the test</span>
+<span class="sd">        function, the exception instance that was raised,</span>
+<span class="sd">        and a cleaned up traceback string.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</div>
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="AbstractFormatter.finished"><a class="viewcode-back" href="../api.html#schluck.AbstractFormatter.finished">[docs]</a>    <span class="k">def</span> <span class="nf">finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Called when all tests have run.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+</div></div>
+<div class="viewcode-block" id="FancyFormatter"><a class="viewcode-back" href="../api.html#schluck.FancyFormatter">[docs]</a><span class="k">class</span> <span class="nc">FancyFormatter</span><span class="p">(</span><span class="n">AbstractFormatter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Heavily uses ANSI escape codes for fancy output to 256-color</span>
+<span class="sd">    terminals. Progress of running the tests is indicated by a progressbar</span>
+<span class="sd">    and failures are shown with syntax highlighted tracebacks.</span>
+
+<span class="sd">    This is the default formatter.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">progressbar</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">maxval</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">tests</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">failures</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">counter</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">failure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">counter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">failures</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">test</span><span class="p">,</span> <span class="n">traceback</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">inspect</span>
+        <span class="kn">from</span> <span class="nn">pygments.console</span> <span class="kn">import</span> <span class="n">colorize</span>
+        <span class="kn">from</span> <span class="nn">pygments</span> <span class="kn">import</span> <span class="n">highlight</span>
+        <span class="kn">from</span> <span class="nn">pygments.lexers</span> <span class="kn">import</span> <span class="n">PythonTracebackLexer</span>
+        <span class="kn">from</span> <span class="nn">pygments.formatters</span> <span class="kn">import</span> <span class="n">Terminal256Formatter</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">test</span><span class="p">,</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">failures</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;—&#39;</span> <span class="o">*</span> <span class="mi">80</span>
+            <span class="k">print</span> <span class="n">colorize</span><span class="p">(</span><span class="s">&#39;bold&#39;</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">test</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span> <span class="n">test</span><span class="o">.</span><span class="n">__name__</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">test</span><span class="o">.</span><span class="n">__doc__</span><span class="p">:</span>
+                <span class="k">print</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getdoc</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+            <span class="k">print</span> <span class="s">&#39;—&#39;</span> <span class="o">*</span> <span class="mi">80</span>
+            <span class="k">print</span> <span class="n">highlight</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">PythonTracebackLexer</span><span class="p">(),</span>
+                            <span class="n">Terminal256Formatter</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">failures</span><span class="p">:</span>
+            <span class="n">failed</span> <span class="o">=</span> <span class="n">colorize</span><span class="p">(</span><span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">failures</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">failed</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">failures</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;Failures: </span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">failed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">counter</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Tests"><a class="viewcode-back" href="../api.html#schluck.Tests">[docs]</a><span class="k">class</span> <span class="nc">Tests</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Collection of test functions.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tests</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="Tests.test"><a class="viewcode-back" href="../api.html#schluck.Tests.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Decorate a function as a test belonging to this collection.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span>
+</div>
+<div class="viewcode-block" id="Tests.register"><a class="viewcode-back" href="../api.html#schluck.Tests.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Merge in another test collection.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tests</span><span class="o">.</span><span class="n">tests</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Tests.run"><a class="viewcode-back" href="../api.html#schluck.Tests.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run all tests in this collection.</span>
+
+<span class="sd">        :param formatter:</span>
+<span class="sd">            An object implementing :class:`AbstractFormatter` (not enforced).</span>
+<span class="sd">            Defaults to :class:`FancyFormatter`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">failed</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">formatter</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">formatter</span> <span class="o">=</span> <span class="n">FancyFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tests</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tests</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">test</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">failed</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">__file__</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                        <span class="k">del</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                        <span class="k">del</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                <span class="n">formatter</span><span class="o">.</span><span class="n">failure</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">formatter</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+        <span class="n">formatter</span><span class="o">.</span><span class="n">finished</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">failed</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="Assert"><a class="viewcode-back" href="../api.html#schluck.Assert">[docs]</a><span class="k">class</span> <span class="nc">Assert</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrap an object such that boolean operations on it fails with an</span>
+<span class="sd">    :exc:`AssertionError` if the operation results in :const:`False`,</span>
+<span class="sd">    with more helpful error messages on failure than :keyword:`assert`.</span>
+
+<span class="sd">    A test failure is simply an unhandled exception, so it is completely</span>
+<span class="sd">    optional to use this class.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        Assert(1 + 1) == 2</span>
+<span class="sd">        2 in Assert([1, 2, 3])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">==</span> <span class="n">obj</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> != </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">!=</span> <span class="n">obj</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> == </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Assert.is_"><a class="viewcode-back" href="../api.html#schluck.Assert.is_">[docs]</a>    <span class="k">def</span> <span class="nf">is_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The :keyword:`is` operator is not overridable, for good reasons</span>
+<span class="sd">        (that would defeat its purpose), so you can use this method for</span>
+<span class="sd">        asserting identity::</span>
+
+<span class="sd">            Assert(True).is_(True)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="ow">is</span> <span class="n">obj</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> is not </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Assert.is_not"><a class="viewcode-back" href="../api.html#schluck.Assert.is_not">[docs]</a>    <span class="k">def</span> <span class="nf">is_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The negated form of :meth:`is_`, corresponding to the ``is not``</span>
+<span class="sd">        operation::</span>
+
+<span class="sd">            Assert([]).is_not([])</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">obj</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> is </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> not in </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Assert.in_"><a class="viewcode-back" href="../api.html#schluck.Assert.in_">[docs]</a>    <span class="k">def</span> <span class="nf">in_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Assert membership. While you can use the :keyword:`in` operator,</span>
+<span class="sd">        its order is inconsistent with the rest of the operators and doesn&#39;t</span>
+<span class="sd">        work with the ``not in`` operation.</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">            2 in Assert([1, 2, 3])</span>
+<span class="sd">            Assert(2).in_([1, 2, 3])</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> not in </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Assert.not_in"><a class="viewcode-back" href="../api.html#schluck.Assert.not_in">[docs]</a>    <span class="k">def</span> <span class="nf">not_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The negated form of :meth:`in_`, corresponding to the ``not in``</span>
+<span class="sd">        operation::</span>
+
+<span class="sd">            Assert(0).not_in([1, 2, 3])</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> in </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">&lt;</span> <span class="n">obj</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> &gt;= </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">&lt;=</span> <span class="n">obj</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> &gt; </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">&gt;</span> <span class="n">obj</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> &lt;= </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">&gt;=</span> <span class="n">obj</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> &lt; </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="nd">@contextmanager</span>
+<div class="viewcode-block" id="Assert.raises"><a class="viewcode-back" href="../api.html#schluck.Assert.raises">[docs]</a>    <span class="k">def</span> <span class="nf">raises</span><span class="p">(</span><span class="n">exception</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Context manager that fails if a particular exception is not</span>
+<span class="sd">        raised::</span>
+
+<span class="sd">            with Assert.raises(TypeError):</span>
+<span class="sd">                max(5)</span>
+
+<span class="sd">        :param exception: An exception class.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span>
+        <span class="k">except</span> <span class="n">exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="n">exception</span><span class="o">.</span><span class="n">__name__</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&quot;didn&#39;t raise </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">error</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Schluck v0.1dev documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Dag Odenhall.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>
